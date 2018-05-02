@@ -1,0 +1,217 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.iebm</groupId>
+	<artifactId>iebm-data-platform</artifactId>
+	<!-- <version>1.0</version> -->
+	<packaging>jar</packaging>
+
+	<name>iebm-data-platform</name>
+
+	<!-- Inherit defaults from Spring Boot -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.RELEASE</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.5</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.28</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+		<!-- mysql驱动; -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+		<!-- mybatis -->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
+		<!--mapper -->
+		<dependency>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper-spring-boot-starter</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<!-- pagehelper -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<!-- alibaba 数据库连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.9</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.shiro/shiro-core -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<!-- redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- 打包原文件 -->
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<!-- assemble 方式打包, eclipse run as build... goals 输入:clean package appassembler:assemble -->
+				<!-- assemble 方式打包, 或控制台 输入:mvn clean package appassembler:assemble -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<configuration>
+					<!-- 生成linux, windows两种平台的执行脚本 -->
+					<platforms>
+						<platform>windows</platform>
+						<platform>unix</platform>
+					</platforms>
+					<!-- 根目录 -->
+					<assembleDirectory>${project.build.directory}/${project.artifactId}-${project.version}</assembleDirectory>
+					<!-- 打包的jar，以及maven依赖的jar放到这个目录里面 -->
+					<repositoryName>lib</repositoryName>
+					<!-- 可执行脚本的目录 -->
+					<binFolder>bin</binFolder>
+					<binFileExtensions>
+						<unix>.sh</unix>
+					</binFileExtensions>
+					<!-- 配置文件的目标目录 -->
+					<configurationDirectory>conf</configurationDirectory>
+					<!-- 拷贝配置文件到上面的目录中 -->
+					<copyConfigurationDirectory>true</copyConfigurationDirectory>
+					<!-- 从哪里拷贝配置文件 (默认src/main/config) -->
+					<configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
+					<!-- lib目录中jar的存放规则，默认是${groupId}/${artifactId}的目录格式，flat表示直接把jar放到lib目录 -->
+					<repositoryLayout>flat</repositoryLayout>
+					<encoding>UTF-8</encoding>
+					<logsDirectory>logs</logsDirectory>
+					<tempDirectory>tmp</tempDirectory>
+					<programs>
+						<program>
+							<id>startup</id>
+							<!-- 启动类 -->
+							<mainClass>com.iebm.Application</mainClass>
+							<jvmSettings>
+								<extraArguments>
+									<extraArgument>-server</extraArgument>
+									<extraArgument>-Xmx256M</extraArgument>
+									<extraArgument>-Xms256M</extraArgument>
+								</extraArguments>
+							</jvmSettings>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<!-- 生成的jar中,不包含pom.xml和pom.properties这两个文件 -->
+						<addMavenDescriptor>false</addMavenDescriptor>
+						<manifest>
+							<!-- 是否要把第三方jar放到manifest的classpath中 -->
+							<addClasspath>true</addClasspath>
+							<!-- 生成的manifest中classpath的前缀,第三方jar在lib目录下,前缀是lib/ -->
+							<classpathPrefix>lib/</classpathPrefix>
+							<!-- 应用的main class -->
+							<mainClass>com.iebm.Application</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<!-- The configuration of the plugin -->
+				<configuration>
+					<!-- Specifies the configuration file of the assembly plugin -->
+					<descriptors>
+						<descriptor>src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id><!-- 此处指定继承合并 -->
+						<phase>package</phase><!-- 绑定到打包阶段 -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.iebm.admin.info.dao.AdminInfoDAO">
+	<!-- 管理员分页列表和详细查询公用 -->
+	<resultMap id="adminInfoResultMap" type="com.iebm.admin.info.dtoform.AdminInfoDTOForm">
+		<id column="id" property="id" />
+		<result column="account" property="account" />
+		<result column="real_name" property="realName" />
+		<result column="company_id" property="companyId" />
+		<result column="department_id" property="departmentId" />
+		<result column="salt" property="salt" />
+		<result column="company" property="company" />
+		<result column="department" property="department" />
+		<result column="last_login_time" property="lastLoginTime" />
+		<result column="createBy" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="updateBy" property="updateBy" />
+		<result column="update_time" property="updatetTime" />
+	</resultMap>
+	<!-- 展示所有的公司 -->
+	<select id="showCompanyList" resultType="com.iebm.dto.AdminCompanyInfoDTO">
+		select
+		id,
+		company,
+		remark,
+		createBy,
+		create_time,
+		updateBy,
+		update_time
+		from
+		admin_company_info;
+	</select>
+	<!-- 根据条件展示部门名称 -->
+	<select id="showDepartmentInfo" parameterType="com.iebm.dto.AdminDepartmentInfoDTO"
+		resultType="com.iebm.dto.AdminDepartmentInfoDTO">
+		select
+		id,
+		company_id,
+		department,
+		remark,
+		createBy,
+		create_time,
+		updateBy,
+		update_time
+		from
+		admin_department_info
+		where 1=1
+		<if test="companyId !=null">
+			and company_id=#{companyId}
+		</if>
+	</select>
+	<!-- 根据id查询详细信息 -->
+	<select id="selectIdShowAdminInfo" parameterType="java.util.Map"
+		resultMap="adminInfoResultMap">
+		select
+		aio.id,
+		aio.account,
+		aio.company_id,
+		aio.department_id,
+		aio.salt,
+		aio.last_login_time,
+		aci.company,
+		adi.department,
+		aio.createBy,
+		aio.create_time,
+		aio.updateBy,
+		aio.update_time
+		from
+		admin_info aio,
+		admin_company_info aci,
+		admin_department_info adi
+		where
+		aio.company_id=aci.id and
+		aio.department_id=adi.id
+		<if test="account !=null">
+			and aio.account=#{account}
+		</if>
+		<if test="id !=null">
+			and aio.id=#{id}
+		</if>
+
+	</select>
+	<!-- 分页：根据条件查询 -->
+	<select id="showAdminPageInfoList" parameterType="com.iebm.admin.info.dtoform.AdminInfoDTOForm"
+		resultMap="adminInfoResultMap">
+		select
+		aio.id,
+		aio.account,
+		aio.company_id,
+		aio.department_id,
+		aio.salt,
+		aio.last_login_time,
+		aio.jurisdiction_id,
+		aci.company,
+		adi.department,
+	    aio.createBy,
+		aio.create_time,
+		aio.updateBy,
+		aio.update_time
+		from
+		admin_info aio,
+		admin_company_info aci,
+		admin_department_info adi
+		where
+		aio.company_id=aci.id and
+		aio.department_id=adi.id
+		<if test="companyId !=null">
+			and aio.company_id=#{companyId}
+		</if>
+		<if test="departmentId !=null">
+			and aio.department_id=#{departmentId}
+		</if>
+		<if test="account !=null">
+			and aio.account=#{account}
+		</if>
+	</select>
+	<!-- 登录 -->
+	<select id="adminLogin" parameterType="java.util.Map"
+		resultType="int">
+		select count(1) from admin_info where account=#{account}
+		and password=#{password}
+	</select>
+
+
+
+
+</mapper>

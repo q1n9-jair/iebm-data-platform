@@ -1,0 +1,59 @@
+<assembly>
+	<id>bin</id>
+	<!-- 最终打包成一个用于发布的zip文件 -->
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<!-- 是否包含根目录,包含:打包后解压文件包含根目录,不包含:打包后解压文件为当前目录,默认为true -->
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<!-- Adds dependencies to zip package under lib directory -->
+	<dependencySets>
+		<dependencySet>
+			<!-- 项目的jar包打进zip文件的lib目录 -->
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+			<!-- 不解压依赖的jar包 -->
+			<unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<!-- 把项目相关的说明文件，打包进zip文件的根目录 -->
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory>/</outputDirectory>
+			<includes>
+				<include>README*</include>
+				<include>LICENSE*</include>
+				<include>NOTICE*</include>
+			</includes>
+		</fileSet>
+
+		<!-- 把项目的配置文件，打包进zip文件的conf目录 -->
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>*.xml</include>
+				<include>*.properties</include>
+			</includes>
+		</fileSet>
+
+		<!-- 把项目的脚本文件目录(src/main/scripts)中的启动脚本文件,打包进zip文件的跟目录 -->
+		<fileSet>
+			<directory>${project.build.scriptSourceDirectory}</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>*</include>
+			</includes>
+		</fileSet>
+		<!-- 把项目自己编译出来的jar文件,打包进zip文件的根目录 -->
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
